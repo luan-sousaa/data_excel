@@ -1,4 +1,10 @@
+import dcc
+from dash import dash_table, dcc
 import pandas as pd
+
+from dash import Dash, html
+import plotly.express as px
+
 
 # caminho para o arquivo do excel
 caminho_arquivo = "C:/Users/Luan/Desktop/dados_vendas_git.csv"
@@ -42,3 +48,27 @@ def produtos_vendido():
 
 produtos_vendido()
 
+
+#inicialização do app
+app = Dash()
+
+#adiciona cores de fundo e do texto
+colors = {
+    'background': '#111111',
+    'text': '#7FDBFF'
+}
+#adiciona cores de fundo e do texto
+colors = {
+    'background': '#000000',
+    'text': '#A9A9A9'}
+
+app.layout = html.Div([
+    html.Div(["Gráfico das vendas"]),
+    #dash_table.DataTable(data=data_frame.to_dict('records'), page_size=10),
+    dcc.Graph(figure=px.histogram(data_frame, x='Produto', y='Quantidade', histfunc='avg')),
+    #dcc.Graph(figure=px.density_heatmap(data_frame, x="Região", y="Total_Venda")),
+    dcc.Graph(figure=px.histogram(data_frame, x='Cliente', y='Quantidade', histfunc='avg'))
+])
+
+if __name__ == '__main__':
+    app.run(debug=True)
