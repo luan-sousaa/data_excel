@@ -1,0 +1,10 @@
+﻿ID_Venda;Data;Cliente;Produto;Quantidade;Preço_Unitário;Total_Venda;Região;Método_Pagamento
+1001;2024-01-01;Ana Souza;Notebook;1;3500;3500;Sul;Cartão de Crédito
+1002;2024-01-03;João Pereira;Smartphone;2;1800;3600;Sudeste;Boleto
+1003;2024-01-05;Maria Oliveira;Smart TV;1;2200;2200;Nordeste;Pix
+1004;2024-01-07;Carlos Silva;Tablet;3;900;2700;Centro-Oeste;Cartão de Débito
+1005;2024-01-10;Fernanda Costa;Impressora;2;700;1400;Norte;Cartão de Crédito
+1006;2024-01-15;Pedro Santos;Fone de Ouvido;5;150;750;Sudeste;Boleto
+1007;2024-01-18;Juliana Mendes;Monitor;1;1200;1200;Sul;Pix
+1008;2024-01-20;Eduardo Lima;Teclado;4;200;800;Nordeste;Cartão de Débito
+p;;;;;;;;
