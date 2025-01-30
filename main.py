@@ -31,8 +31,12 @@ def produtos_vendido():
         # Agrupar por produto e sumarizar a quantidade vendida
         vendas_por_produto = data_frame.groupby('Produto')['Quantidade'].sum().reset_index()
 
+
         # Ordenar os produtos pela quantidade vendida em ordem decrescente
         vendas_por_produto = vendas_por_produto.sort_values(by="Quantidade", ascending=False)
+
+        # Converter os dados para uma lista
+        lista_vendas = [f"{row['Produto']}: {row['Quantidade']}" for _, row in vendas_por_produto.iterrows()]
 
         # Função que mostra o produto mais vendido
         produto_mais_vendido = vendas_por_produto.iloc[0, 0]
@@ -40,7 +44,7 @@ def produtos_vendido():
 
         # Criar a saída como uma única string
         resultado = (
-            "Quantidade vendida por produto (em ordem decrescente):",
+            f"Quantidade vendida por produto (em ordem decrescente): {lista_vendas}",
             html.Br(),
             f"Produto mais vendido: {produto_mais_vendido}",
             html.Br(),
@@ -57,8 +61,8 @@ app = Dash()
 
 #adiciona cores de fundo e do texto
 colors = {
-    'background': '#000000',
-    'text': '#A9A9A9'}
+    'background': '#A9A9A9',
+    'text': '#000000'}
 
 app.layout = html.Div(
     style={'backgroundColor': colors['background']},
@@ -67,6 +71,7 @@ app.layout = html.Div(
             "Gráfico das vendas",
             style={'textAlign': 'center', 'color': colors['text']}  # Cor e alinhamento do texto
         ),
+
 
         html.Div([
             html.H3("Resumo das Vendas", style={'color': colors['text']}),
@@ -92,18 +97,30 @@ app.layout = html.Div(
             ),
 
         dcc.Graph(
-        figure=px.histogram(data_frame, x='Produto', y='Quantidade', histfunc='avg'),
-        style={'backgroundColor': colors['background'],'color': colors['text']}
+        figure=px.histogram(data_frame, x='Produto', y='Quantidade', histfunc='avg',title="Quantidade de vendas por produto")
+        .update_layout(
+            plot_bgcolor=colors['background'],
+            paper_bgcolor=colors['background'],
+            font=dict(color=colors['text'])
+        )
         ),
 
         dcc.Graph(
-        figure=px.line(data_frame, x="Data", y="Total_Venda" , color="Produto" ),
-        style={'backgroundColor': colors['background'], 'color': colors['text']}
-        ),
+        figure=px.histogram(data_frame, x="Total_Venda", y="Região", color="Produto",histfunc="avg",title="Vendas Por Região" )
 
+        .update_layout(
+            plot_bgcolor=colors['background'],
+            paper_bgcolor=colors['background'],
+            font=dict(color=colors['text'])
+        )
+        ),
         dcc.Graph(
-        figure=px.histogram(data_frame, x='Cliente', y='Quantidade', histfunc='avg'),
-        style={'backgroundColor': colors['background'], 'color': colors['text']}
+        figure=px.histogram(data_frame, x='Cliente', y='Quantidade' ,histfunc='avg',title="Quantidade de vendas por cliente")
+        .update_layout(
+            plot_bgcolor=colors['background'],
+            paper_bgcolor=colors['background'],
+            font=dict(color=colors['text'])
+        )
         )
     ])
     ]
