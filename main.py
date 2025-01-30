@@ -1,4 +1,6 @@
 import dcc
+import pd
+import style
 from dash import dash_table, dcc
 import pandas as pd
 
@@ -15,16 +17,14 @@ data_frame = pd.read_csv(caminho_arquivo, delimiter=';')
 def quantidade():
     if "Quantidade" in data_frame.columns:
         quantidade_produto =  data_frame["Quantidade"].sum().astype(int)
-        print(f"Quantidade de produtos vendidos = {quantidade_produto}")
+        return f"Quantidade de produtos vendidos = {quantidade_produto}"
     else:
-        print('Coluna "Quantidade" não encontrada')
-quantidade()
+        return 'Coluna "Quantidade" não encontrada'
 
 def valor_total():
     if "Total_Venda" in data_frame.columns:
         valor_total_vendido = data_frame["Total_Venda"].sum().astype(float)
-        print(f"Valor total dos produtos vendidos = R$ {valor_total_vendido:.2f}")
-valor_total()
+        return f"Valor total dos produtos vendidos = R$ {valor_total_vendido:.2f}"
 
 def produtos_vendido():
     if "Produto" in data_frame.columns and "Quantidade" in data_frame.columns:
@@ -33,42 +33,81 @@ def produtos_vendido():
 
         # Ordenar os produtos pela quantidade vendida em ordem decrescente
         vendas_por_produto = vendas_por_produto.sort_values(by="Quantidade", ascending=False)
-        print("Quantidade vendida por produto (em ordem decrescente):")
-        print(vendas_por_produto)
 
-        #funçao que mostra o produto mais vendido
+        # Função que mostra o produto mais vendido
         produto_mais_vendido = vendas_por_produto.iloc[0, 0]
-        print(f"Produto mais vendido: {produto_mais_vendido}")
-
         quantidade_produto_mais_vendido = vendas_por_produto.iloc[0, 1]
-        print(f"Quantidade de produtos vendidos: {quantidade_produto_mais_vendido}")
+
+        # Criar a saída como uma única string
+        resultado = (
+            "Quantidade vendida por produto (em ordem decrescente):",
+            html.Br(),
+            f"Produto mais vendido: {produto_mais_vendido}",
+            html.Br(),
+            f"Quantidade de produtos vendidos: {quantidade_produto_mais_vendido}"
+        )
+        return resultado
     else:
-        print('As colunas "Produto" e/ou "Quantidade" não foram encontradas.')
-
-
-produtos_vendido()
+        return 'As colunas "Produto" e/ou "Quantidade" não foram encontradas.'
 
 
 #inicialização do app
 app = Dash()
 
-#adiciona cores de fundo e do texto
-colors = {
-    'background': '#111111',
-    'text': '#7FDBFF'
-}
+
 #adiciona cores de fundo e do texto
 colors = {
     'background': '#000000',
     'text': '#A9A9A9'}
 
-app.layout = html.Div([
-    html.Div(["Gráfico das vendas"]),
-    #dash_table.DataTable(data=data_frame.to_dict('records'), page_size=10),
-    dcc.Graph(figure=px.histogram(data_frame, x='Produto', y='Quantidade', histfunc='avg')),
-    #dcc.Graph(figure=px.density_heatmap(data_frame, x="Região", y="Total_Venda")),
-    dcc.Graph(figure=px.histogram(data_frame, x='Cliente', y='Quantidade', histfunc='avg'))
-])
+app.layout = html.Div(
+    style={'backgroundColor': colors['background']},
+    children=[
+        html.H1(
+            "Gráfico das vendas",
+            style={'textAlign': 'center', 'color': colors['text']}  # Cor e alinhamento do texto
+        ),
+
+        html.Div([
+            html.H3("Resumo das Vendas", style={'color': colors['text']}),
+            html.P(quantidade(), style={'color': colors['text']}),
+            html.P(valor_total(), style={'color': colors['text']}),
+            html.P(produtos_vendido(), style={'color': colors['text']})
+        ]),
+
+        html.Div([
+            html.H3("Tabela de Dados", style={'color': colors['text']}),
+            dash_table.DataTable(
+                data=data_frame.to_dict('records'),
+                page_size=10,
+                style_table={'overflowX': 'auto'},
+                style_header={
+                    'backgroundColor': colors['background'],
+                    'color': colors['text']
+                },
+                style_data={
+                    'backgroundColor': colors['background'],
+                    'color': colors['text']
+                }
+            ),
+
+        dcc.Graph(
+        figure=px.histogram(data_frame, x='Produto', y='Quantidade', histfunc='avg'),
+        style={'backgroundColor': colors['background'],'color': colors['text']}
+        ),
+
+        dcc.Graph(
+        figure=px.line(data_frame, x="Data", y="Total_Venda" , color="Produto" ),
+        style={'backgroundColor': colors['background'], 'color': colors['text']}
+        ),
+
+        dcc.Graph(
+        figure=px.histogram(data_frame, x='Cliente', y='Quantidade', histfunc='avg'),
+        style={'backgroundColor': colors['background'], 'color': colors['text']}
+        )
+    ])
+    ]
+)
 
 if __name__ == '__main__':
     app.run(debug=True)
