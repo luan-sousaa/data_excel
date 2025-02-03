@@ -1,5 +1,3 @@
-import dcc
-import pd
 import style
 from dash import dash_table, dcc
 import pandas as pd
@@ -9,7 +7,7 @@ import plotly.express as px
 
 
 # caminho para o arquivo do excel
-caminho_arquivo = "C:/Users/Luan/Desktop/dados_vendas_git.csv"
+caminho_arquivo = "dados_vendas_git.csv"
 
 # Leitura do Excel para DataFrame
 data_frame = pd.read_csv(caminho_arquivo, delimiter=';')
