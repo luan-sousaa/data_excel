@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 python nome_do_arquivo.py
 
-A aplicação será iniciada em http://127.0.0.1:8050/
+A aplicação será iniciada em http://127.0.0.1:8050/.
 
 📌 Uso
 
